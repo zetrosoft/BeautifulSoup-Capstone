@@ -15,10 +15,10 @@
 					<br>
 					<br>
 					<h1 class="mb-2">
-						This is the title 
+						Indonesian Rupiahs (IDR) per US Dollar (USD)
 					</h1>
 					<h3>
-						Reported Period: insert the data period here
+						Reported {{periode}}
 					</h3>
 					<br>
 				</div>
@@ -55,8 +55,8 @@
 				<!-- Tab content -->
 				<div id="profile" class="tabcontent">
 					<br>
-					<h3 style="color: #333333;text-align:center">plot title here</h3>
-					<div class="img-container"">
+					<h3 style="color: #333333;text-align:center">Exchange Rate History</h3>
+					<div class="img-container">
 						{% if funded_plot != None %}
 					  <img src="data:image/png;base64,{{ plot_result }}" >
 						{% endif %}
