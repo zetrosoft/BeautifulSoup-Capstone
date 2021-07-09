@@ -23,38 +23,34 @@ table = soup.find('table')
     
     #temp.append((____,____)) 
 
-temp = [] #initiating a tuple
-baris = table.find_all('tr')
+temp = []
+row = table.find_all('tr',attrs={'class':None})
+row_length= len(row)
 
-for tr in baris:
-    td = tr.find_all('td')
-    row =[i.text for i in td]
-    temp.append(row)
+for i in range(1,row_length):
+    ExchangeDate =  row[i].find_all('td')[0].text
+    RatePrice =  row[i].find_all('td')[2].text
     
-temp
+    temp.append((ExchangeDate,RatePrice))
 
 temp = temp[::-1]
 
 #change into dataframe
-df = pd.DataFrame(temp,columns =['ExchangeDate','DayName','Price','Remarks'])
+df = pd.DataFrame(temp,columns =['ExchangeDate','Rate'])
 
 #insert data wrangling here
 #cleaning data
 df = df.dropna(how='any')
 #TODO :
 # Change ExchangeDate to datetime64 data type
-df['ExchangeDate'] = df['ExchangeDate'].astype('datetime64')
+df[['ExchangeDate']] = df[['ExchangeDate']].astype('datetime64')
 # Change DayName to Category data type
-df['DayName'] = df['DayName'].astype('category')
-# # Remove or split Price column for IDR and change Price to float64 data type
-df['Price'] = df['Price'].str.replace('IDR','')
-df['Price'] = df['Price'].str.replace(',','')
-df['Price'] = df['Price'].astype('float64')
-
+# # Remove or split Rate column for IDR and change Rate to float64 data type
+df['Rate'] = df['Rate'].str.replace('IDR','')
+df['Rate'] = df['Rate'].str.replace(',','')
+df['Rate'] = df['Rate'].astype('float64')
 #for visualisation only
 df['ExDate'] = df['ExchangeDate'].dt.strftime('%d-%m-%Y')
-# Drop remark columns - not used data
-df=df.drop('Remarks',axis=1)
 
 #wrangling
 #Create Exchangedate as column index
@@ -65,7 +61,7 @@ df = df.set_index('ExchangeDate')
 def index(): 
 
 	#for fill card column
-	idr_mean = '{:,.2f}'.format(df["Price"].mean().round(2))
+	idr_mean = '{:,.2f}'.format(df["Rate"].mean().round(2))
 	card_data = f'$1 USD = {idr_mean} IDR'
 
 	#for fill Report Periode 
@@ -73,16 +69,16 @@ def index():
 	periode_to = datetime.strptime(f'{df.reset_index()["ExchangeDate"].max()}',"%Y-%m-%d %H:%M:%S")
 	periode = f'Periode : {periode_from.strftime("%d %b %Y")} to {periode_to.strftime("%d %b %Y")}'
 	# generate plot
-	min_rate	= df.min()[['Price','ExDate']].to_list()
+	min_rate	= df.min()[['Rate','ExDate']].to_list()
 	min_val 	= '{:,.2f}'.format(min_rate[0])
 	avg_rate 	= df.agg('mean').to_list()
 	avg_val		= '{:,.2f}'.format(avg_rate[0])
-	max_rate	= df.max()[['Price','ExDate']].to_list()
+	max_rate	= df.max()[['Rate','ExDate']].to_list()
 	max_val 	= '{:,.2f}'.format(max_rate[0])
 	xLabel = f'Min = {min_val}({min_rate[1]}) - Avg = {avg_val} - Max ={max_val}({max_rate[1]})'
 	ax = df.plot(
 		x='ExDate',
-		y='Price',
+		y='Rate',
 		figsize = (20,9),
 		xlabel=xLabel,
 		ylabel='Exchange Rate',
@@ -102,16 +98,16 @@ def index():
 	last_period		= df.index.max()
 	df_30 = df[df.index >= (last_period + pd.Timedelta(days=-60))]
 	#generate plot2
-	min_rate	= df_30.min()[['Price','ExDate']].to_list()
+	min_rate	= df_30.min()[['Rate','ExDate']].to_list()
 	min_val 	= '{:,.2f}'.format(min_rate[0])
 	avg_rate 	= df_30.agg('mean').to_list()
 	avg_val		= '{:,.2f}'.format(avg_rate[0])
-	max_rate	= df_30.max()[['Price','ExDate']].to_list()
+	max_rate	= df_30.max()[['Rate','ExDate']].to_list()
 	max_val 	= '{:,.2f}'.format(max_rate[0])
 	xLabel = f'Min = {min_val}({min_rate[1]}) - Avg = {avg_val} - Max ={max_val}({max_rate[1]})'
 	ax2 = df_30.plot(
 		x='ExDate',
-		y='Price',
+		y='Rate',
 		figsize = (20,10),
 		xlabel=xLabel,
 		ylabel='Exchange Rate',
