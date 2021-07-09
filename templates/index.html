@@ -10,19 +10,19 @@
 </head>
 <body>
 	<div class="container-fluid">
-			<div class="row">
-				<div class="col-md-10 col-lg-8 col-sm-10">
-					<br>
-					<br>
-					<h1 class="mb-2">
-						Indonesian Rupiahs (IDR) per US Dollar (USD)
-					</h1>
-					<h3>
-						Reported {{periode}}
-					</h3>
-					<br>
-				</div>
+		<div class="row">
+			<div class="col-md-10 col-lg-8 col-sm-10">
+				<br>
+				<br>
+				<h1 class="mb-2">
+					Indonesian Rupiahs (IDR) per US Dollar (USD)
+				</h1>
+				<h3>
+					Reported {{periode}}
+				</h3>
+				<br>
 			</div>
+		</div>
 		<div class="row">
 			<div class="col-md-4 col-lg-4 col-sm-4">
 				<div class="card card-stats">
@@ -45,7 +45,7 @@
 				<div class="tab">
 					<button class="tablinks" onclick="openTab(event, 'profile') " id="defaultOpen">by Profile
 					</button>
-					<button class="tablinks" onclick="openTab(event, 'Own')">(Create-Your-Own)
+					<button class="tablinks" onclick="openTab(event, 'Own')">Last 30 Day Rate History
 					</button>
 				</div>
 			</div>
@@ -58,13 +58,19 @@
 					<h3 style="color: #333333;text-align:center">Exchange Rate History</h3>
 					<div class="img-container">
 						{% if funded_plot != None %}
-					  <img src="data:image/png;base64,{{ plot_result }}" >
+					  	<img class='img-fluid' src="data:image/png;base64,{{ plot_result }}" >
 						{% endif %}
 					</div>
 				</div>
 				<div id="Own" class="tabcontent">
 				  <!-- Define your own analysis for extra challange -->
-
+					<br>
+					<h3 style="color: #333333;text-align:center">Last 30 Day Rate History</h3>
+					<div class="img-container">
+						{% if funded_plot != None %}
+					  <img class='img-fluid'  src="data:image/png;base64,{{ plot_result2 }}" >
+						{% endif %}
+					</div>
 				</div>
 			</div>
 		</div>

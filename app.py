@@ -98,11 +98,39 @@ def index():
 	figdata_png = base64.b64encode(figfile.getvalue())
 	plot_result = str(figdata_png)[2:-1]
 
+	df['Periode'] 	= df.index.to_period('M')
+	last_period		= df.index.max()
+	df_30 = df[df.index >= (last_period + pd.Timedelta(days=-60))]
+	#generate plot2
+	min_rate	= df_30.min()[['Price','ExDate']].to_list()
+	min_val 	= '{:,.2f}'.format(min_rate[0])
+	avg_rate 	= df_30.agg('mean').to_list()
+	avg_val		= '{:,.2f}'.format(avg_rate[0])
+	max_rate	= df_30.max()[['Price','ExDate']].to_list()
+	max_val 	= '{:,.2f}'.format(max_rate[0])
+	xLabel = f'Min = {min_val}({min_rate[1]}) - Avg = {avg_val} - Max ={max_val}({max_rate[1]})'
+	ax2 = df_30.plot(
+		x='ExDate',
+		y='Price',
+		figsize = (20,10),
+		xlabel=xLabel,
+		ylabel='Exchange Rate',
+		grid=True,
+		color='Blue',
+		kind='line'
+	)
+
+	figfile2 = BytesIO()
+	plt.savefig(figfile2, format='png', transparent=True)
+	figfile2.seek(0)
+	figdata_png2 = base64.b64encode(figfile2.getvalue())
+	plot_result2 = str(figdata_png2)[2:-1]
 
 	# render to html
 	return render_template('index.html',
 		card_data = card_data,
 		plot_result=plot_result,
+		plot_result2=plot_result2,
 		periode = periode
 		)
 
